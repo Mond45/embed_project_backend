@@ -2,7 +2,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import bodyParser from 'body-parser'
 import { initializeApp } from 'firebase/app';
-import { addDoc, collection, getDocs, getFirestore, orderBy, query, limit } from 'firebase/firestore'
+import { doc, addDoc, collection, getDocs, getFirestore, orderBy, query, limit, setDoc } from 'firebase/firestore'
 import cors from 'cors';
 
 dotenv.config();
@@ -40,6 +40,12 @@ app.post('/', async (req, res) => {
     const data = { ...req.body, date: Date.now() };
     const docRef = await addDoc(collection(db, "data"), data)
     res.send(`added data to db: {${data}} with id ${docRef.id}`);
+});
+
+app.post('/watering', async (req, res) => {
+    const data = { value: req.body.value };
+    await setDoc(doc(db, "watering", "data"), data);
+    res.send('set watering value');
 });
 
 app.listen(5000);
